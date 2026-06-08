@@ -7,7 +7,10 @@
 </svelte:head>
 
 <nav>
-	<a href="/">🔫 CS:GO Skins</a>
+	<a href="/">
+		<img src="/src/img/logocs.svg" alt="CS:GO logo" class="nav-logo" />
+		CS:GO Skins
+	</a>
 </nav>
 
 {@render children()}
@@ -46,5 +49,13 @@
 		letter-spacing: 0.05em;
 		color: #f0b232;
 		text-transform: uppercase;
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+	}
+
+	.nav-logo {
+		height: 2rem;
+		width: auto;
 	}
 </style>

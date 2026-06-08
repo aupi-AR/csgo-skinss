@@ -1,6 +1,10 @@
 <script>
 	let { data } = $props();
-	const { skin, samWeaponSkins, minPrice, pricesByWear } = data;
+
+	let skin = $derived(data.skin);
+	let samWeaponSkins = $derived(data.samWeaponSkins);
+	let minPrice = $derived(data.minPrice);
+	let pricesByWear = $derived(data.pricesByWear);
 
 	const rarityColors = {
 		'Consumer Grade': '#b0c3d9',
@@ -9,10 +13,17 @@
 		Restricted: '#8847ff',
 		Classified: '#d32ce6',
 		Covert: '#eb4b4b',
-		Contraband: '#e4ae39'
+		Contraband: '#e4ae39',
+		Extraordinary: '#e4ae39'
 	};
 
-	const rarityColor = rarityColors[skin.rarity?.name] ?? '#aaa';
+	const GOLD = '#e4ae39';
+
+	let rarityColor = $derived(
+		skin.category?.name === 'Knives' || skin.rarity?.name === 'Extraordinary'
+			? GOLD
+			: (rarityColors[skin.rarity?.name] ?? '#aaa')
+	);
 </script>
 
 <svelte:head>
@@ -89,7 +100,7 @@
 			<!-- Colecciones (relación M:N) -->
 			{#if skin.collections?.length}
 				<div class="section">
-					<h2>Colecciones <span class="tag">M:N</span></h2>
+					<h2>Colecciones</h2>
 					<div class="collection-list">
 						{#each skin.collections as col}
 							<div class="collection-chip">
@@ -106,7 +117,7 @@
 			<!-- Crates (relación M:N) -->
 			{#if skin.crates?.length}
 				<div class="section">
-					<h2>Cajas <span class="tag">M:N</span></h2>
+					<h2>Cajas</h2>
 					<div class="collection-list">
 						{#each skin.crates as crate}
 							<div class="collection-chip">
@@ -125,7 +136,7 @@
 	<!-- Otras skins del mismo arma (relación 1:N) -->
 	{#if samWeaponSkins.length}
 		<div class="related">
-			<h2>Otras skins de <strong>{skin.weapon?.name}</strong> <span class="tag">1:N</span></h2>
+			<h2>Otras skins de <strong>{skin.weapon?.name}</strong></h2>
 			<div class="related-grid">
 				{#each samWeaponSkins as s}
 					<a href="/skin/{s.id}" class="related-card">
@@ -203,15 +214,15 @@
 	}
 
 	.stattrak {
-		background: #e4ae3922;
-		color: #e4ae39;
-		border: 1px solid #e4ae3944;
+		background: #e4ae39ee;
+		color: #1a1000;
+		border: 1px solid #e4ae39;
 	}
 
 	.souvenir {
-		background: #f0b23222;
-		color: #f0b232;
-		border: 1px solid #f0b23244;
+		background: #f0b232ee;
+		color: #1a1000;
+		border: 1px solid #f0b232;
 	}
 
 	.weapon-label {

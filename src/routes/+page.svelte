@@ -8,11 +8,15 @@
 		Restricted: '#8847ff',
 		Classified: '#d32ce6',
 		Covert: '#eb4b4b',
-		'Contraband': '#e4ae39',
+		Contraband: '#e4ae39',
+		Extraordinary: '#e4ae39'
 	};
 
-	function rarityColor(rarity) {
-		return rarityColors[rarity?.name] ?? '#aaa';
+	const GOLD = '#e4ae39';
+
+	function skinColor(skin) {
+		if (skin.category?.name === 'Knives' || skin.rarity?.name === 'Extraordinary') return GOLD;
+		return rarityColors[skin.rarity?.name] ?? '#aaa';
 	}
 
 	function buildUrl(params) {
@@ -38,7 +42,7 @@
 	<!-- Filtros -->
 	<div class="filters">
 		<div class="filter-group">
-			<label for="weapon">Arma (1:N)</label>
+			<label for="weapon">Arma</label>
 			<select
 				id="weapon"
 				onchange={(e) => {
@@ -56,7 +60,7 @@
 		</div>
 
 		<div class="filter-group">
-			<label for="collection">Colección (M:N)</label>
+			<label for="collection">Colección</label>
 			<select
 				id="collection"
 				onchange={(e) => {
@@ -81,7 +85,7 @@
 	<!-- Grid de skins -->
 	<div class="grid">
 		{#each data.skins as skin}
-			<a href="/skin/{skin.id}" class="card" style="--rarity: {rarityColor(skin.rarity)}">
+			<a href="/skin/{skin.id}" class="card" style="--rarity: {skinColor(skin)}">
 				<div class="card-img">
 					<img src={skin.image} alt={skin.name} loading="lazy" />
 				</div>
@@ -89,7 +93,7 @@
 					<p class="weapon-name">{skin.weapon?.name ?? '—'}</p>
 					<h2 class="skin-name">{skin.pattern?.name ?? skin.name}</h2>
 					{#if skin.rarity}
-						<span class="rarity" style="color: {rarityColor(skin.rarity)}">{skin.rarity.name}</span>
+						<span class="rarity" style="color: {skinColor(skin)}">{skin.rarity.name}</span>
 					{/if}
 					{#if skin.minPrice != null}
 						<span class="price">desde ${skin.minPrice.toFixed(2)}</span>

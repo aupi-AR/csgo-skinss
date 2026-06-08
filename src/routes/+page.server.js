@@ -15,8 +15,14 @@ export async function load({ url }) {
 	// Filtrar skins sin imagen
 	let skins = all.filter((s) => s.image);
 
+	const isGlove = (/** @type {any} */ s) =>
+		s.category?.name === 'Gloves' ||
+		s.weapon?.name?.match(/Gloves?|Wraps?/);
+
 	// Filtro por arma (relación 1:N — un arma tiene muchas skins)
-	if (weaponFilter) {
+	if (weaponFilter === 'Gloves') {
+		skins = skins.filter(isGlove);
+	} else if (weaponFilter) {
 		skins = skins.filter((s) => s.weapon?.name === weaponFilter);
 	}
 
@@ -27,8 +33,11 @@ export async function load({ url }) {
 		);
 	}
 
-	// Listas únicas para filtros
-	const weapons = [...new Set(all.map((s) => s.weapon?.name).filter(Boolean))].sort();
+	// Listas únicas para filtros — todos los guantes se agrupan bajo "Guantes"
+	const allWeaponNames = [...new Set(all.filter((s) => s.image).map((s) => s.weapon?.name).filter(Boolean))];
+	const regularWeapons = allWeaponNames.filter((w) => !isGlove({ weapon: { name: w } })).sort();
+	const hasGloves = all.some((s) => s.image && isGlove(s));
+	const weapons = hasGloves ? [...regularWeapons, 'Gloves'].sort() : regularWeapons;
 	const collections = [
 		...new Set(all.flatMap((s) => s.collections?.map((/** @type {any} */ c) => c.name) ?? []))
 	].sort();
